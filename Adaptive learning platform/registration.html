@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, #74b9ff, #81ecec);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .registration {
+            background: #ffffff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .registration h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2d3436;
+        }
+
+        .inputbox {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .inputbox input {
+            width: 100%;
+            padding: 10px 15px;
+            padding-right: 50px;
+            font-size: 14px;
+            border: 1px solid #dfe6e9;
+            border-radius: 5px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .inputbox i {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #636e72;
+        }
+
+        .voice-btn, .tts-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 18px;
+            color: #0984e3;
+        }
+
+        .terms {
+            margin-bottom: 20px;
+        }
+
+        .terms label {
+            font-size: 14px;
+            color: #2d3436;
+        }
+
+        .terms a {
+            color: #0984e3;
+            text-decoration: none;
+        }
+
+        #registerbutton {
+            width: 100%;
+            padding: 10px 0;
+            background: #0984e3;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        #registerbutton:hover {
+            background: #74b9ff;
+        }
+
+        .already {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .already a {
+            color: #0984e3;
+            text-decoration: none;
+        }
+
+        .already a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="registration">
+        <form action="register1.php" method="post" id="registrationForm">
+            <div class="registrationh3">
+                <h3>Register for UniQEd</h3>
+            </div>
+            <div class="inputbox">
+                <input type="text" name="fullname" placeholder="Full Name" id="fullname" required>
+                <i class='bx bxs-user'></i>
+                <button type="button" class="voice-btn" onclick="startSpeechRecognition('fullname')">🎤</button>
+                <button type="button" class="tts-btn" onclick="speakText('Please enter your full name')">🔊</button>
+            </div>
+            <div class="inputbox">
+                <input type="email" name="email" placeholder="Email" id="email" required>
+                <i class='bx bxs-envelope'></i>
+                <button type="button" class="voice-btn" onclick="startSpeechRecognition('email')">🎤</button>
+                <button type="button" class="tts-btn" onclick="speakText('Please enter your email')">🔊</button>
+            </div>
+            <div class="inputbox">
+                <input type="password" name="password" placeholder="Password" id="password" required>
+                <i class='bx bxs-lock-alt'></i>
+                <button type="button" class="voice-btn" onclick="startSpeechRecognition('password')">🎤</button>
+                <button type="button" class="tts-btn" onclick="speakText('Please enter your password')">🔊</button>
+            </div>
+            <div class="inputbox">
+                <input type="password" name="confirm-password" placeholder="Confirm Password" id="confirmPassword" required>
+                <i class='bx bxs-lock-alt'></i>
+                <button type="button" class="voice-btn" onclick="startSpeechRecognition('confirmPassword')">🎤</button>
+                <button type="button" class="tts-btn" onclick="speakText('Please confirm your password')">🔊</button>
+            </div>
+            <div class="terms">
+                <label>
+                    <input type="checkbox" name="terms" required>
+                    I agree to the <a href="#">Terms & Conditions</a>
+                </label>
+            </div>
+            <input type="button" value="Register" id="registerbutton">
+            <div class="already">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Text-to-Speech Functionality
+        function speakText(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.lang = 'en-US';
+            window.speechSynthesis.speak(speech);
+        }
+
+        // Speech-to-Text Functionality
+        function startSpeechRecognition(inputId) {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+
+            recognition.onresult = (event) => {
+                document.getElementById(inputId).value = event.results[0][0].transcript;
+            };
+
+            recognition.start();
+        }
+
+        // Form Validation
+        function validateForm() {
+            const fullname = document.getElementById('fullname').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (fullname === '') {
+                speakText('Full name cannot be empty.');
+                alert('Full name cannot be empty.');
+                return false;
+            }
+
+            if (!emailPattern.test(email)) {
+                speakText('Please enter a valid email address.');
+                alert('Please enter a valid email address.');
+                return false;
+            }
+
+            if (password === '') {
+                speakText('Password cannot be empty.');
+                alert('Password cannot be empty.');
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                speakText('Passwords do not match.');
+                alert('Passwords do not match.');
+                return false;
+            }
+
+            speakText('Registration successful.');
+            return true;
+        }
+
+        // Handle Register Button Click
+        document.getElementById('registerbutton').addEventListener('click', () => {
+            if (validateForm()) {
+                document.getElementById('registrationForm').submit();
+            }
+        });
+
+        // Welcome TTS on Page Load
+        window.onload = () => {
+            speakText('Welcome to UniQEd Registration! Please fill out the form to create your account.');
+        };
+    </script>
+</body>
+</html>
